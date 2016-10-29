@@ -1,0 +1,33 @@
+consul-master:
+  image: "bodsch/docker-consul:1610-01"
+  container_name: "consul-master"
+  hostname: "consul-master"
+  ports:
+    - "8400:8400"
+    - "8500:8500"
+    - "53:53"
+  command: "agent -data-dir /data -server -bootstrap-expect 3 -ui-dir /opt/consul-web-ui -client=0.0.0.0"
+
+consul2:
+  image: "bodsch/docker-consul:1610-01"
+  container_name: "consul2"
+  hostname: "consul2"
+  ports:
+    - "8400"
+    - "8500"
+    - "8600"
+  links:
+    - "consul-master:consul-master"
+  command: "agent -server -join consul-master"
+
+consul3:
+  image: "bodsch/docker-consul:1610-01"
+  container_name: "consul3"
+  hostname: "consul3"
+  ports:
+    - "8400"
+    - "8500"
+    - "8600"
+  links:
+    - "consul-master:consul-master"
+  command: "agent -server -join consul-master"

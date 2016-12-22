@@ -30,4 +30,4 @@ consul3:
     - "8600"
   links:
     - "consul-master:consul-master"
-  command: "agent -server -join consul-master"
+    command: "agent -server -join consul-master"

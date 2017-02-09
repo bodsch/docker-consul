@@ -1,13 +1,13 @@
 
-FROM bodsch/docker-alpine-base:1701-02
+FROM bodsch/docker-alpine-base:1701-04
 
 MAINTAINER Bodo Schulz <bodo@boone-schulz.de>
 
-LABEL version="1.1.0"
+LABEL version="1702-01"
 
 EXPOSE 8300 8301 8301/udp 8302 8302/udp 8400 8500 8600 8600/udp
 
-ENV CONSUL_VERSION 0.7.2
+ENV CONSUL_VERSION 0.7.4
 
 # ---------------------------------------------------------------------------------------
 

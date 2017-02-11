@@ -1,5 +1,5 @@
 consul-master:
-  image: "bodsch/docker-consul:1610-01"
+  image: "bodsch/docker-consul"
   container_name: "consul-master"
   hostname: "consul-master"
   ports:
@@ -9,7 +9,7 @@ consul-master:
   command: "agent -data-dir /data -server -bootstrap-expect 3 -ui-dir /opt/consul-web-ui -client=0.0.0.0"
 
 consul2:
-  image: "bodsch/docker-consul:1610-01"
+  image: "bodsch/docker-consul"
   container_name: "consul2"
   hostname: "consul2"
   ports:
@@ -21,7 +21,7 @@ consul2:
   command: "agent -server -join consul-master"
 
 consul3:
-  image: "bodsch/docker-consul:1610-01"
+  image: "bodsch/docker-consul"
   container_name: "consul3"
   hostname: "consul3"
   ports:

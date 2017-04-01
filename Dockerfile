@@ -3,13 +3,13 @@ FROM alpine:latest
 
 MAINTAINER Bodo Schulz <bodo@boone-schulz.de>
 
-LABEL version="1702-02"
+LABEL version="1704-01"
 
 ENV \
   ALPINE_MIRROR="dl-cdn.alpinelinux.org" \
   ALPINE_VERSION="v3.5" \
   TERM=xterm \
-  CONSUL_VERSION="0.7.4" \
+  CONSUL_VERSION="0.8.0-rc1" \
   CONSUL_URL="https://releases.hashicorp.com/consul"
 
 EXPOSE 8300 8301 8301/udp 8302 8302/udp 8400 8500 8600 8600/udp

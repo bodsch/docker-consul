@@ -9,11 +9,23 @@ ENV \
   ALPINE_MIRROR="dl-cdn.alpinelinux.org" \
   ALPINE_VERSION="edge" \
   TERM=xterm \
+  BUILD_DATE="2017-04-20" \
   CONSUL_VERSION="0.8.1" \
   CONSUL_URL="https://releases.hashicorp.com/consul" \
   APK_ADD="ca-certificates curl unzip"
 
 EXPOSE 8300 8301 8301/udp 8302 8302/udp 8400 8500 8600 8600/udp
+
+LABEL org.label-schema.build-date=${BUILD_DATE} \
+      org.label-schema.name="Consul Docker Image" \
+      org.label-schema.description="Inofficial Consul Docker Image" \
+      org.label-schema.url="https://www.consul.io/" \
+      org.label-schema.vcs-url="https://github.com/bodsch/docker-consul" \
+      org.label-schema.vendor="Bodo Schulz" \
+      org.label-schema.version=${CONSUL_VERSION} \
+      org.label-schema.schema-version="1.0" \
+      com.microscaling.docker.dockerfile="/Dockerfile" \
+      com.microscaling.license="GNU Lesser General Public License v2.1"
 
 # ---------------------------------------------------------------------------------------
 

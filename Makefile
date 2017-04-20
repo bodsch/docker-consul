@@ -34,8 +34,9 @@ shell:
 		--tty \
 		--hostname=${CONTAINER} \
 		--name=${CONTAINER} \
+		--entrypoint '' \
 		$(IMAGE_NAME) \
-		/bin/bash
+		/bin/sh
 
 exec:
 	docker \

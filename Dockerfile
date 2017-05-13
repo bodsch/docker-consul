@@ -3,14 +3,14 @@ FROM alpine:latest
 
 MAINTAINER Bodo Schulz <bodo@boone-schulz.de>
 
-LABEL version="1704-03"
+LABEL version="1705-03"
 
 ENV \
   ALPINE_MIRROR="dl-cdn.alpinelinux.org" \
   ALPINE_VERSION="edge" \
   TERM=xterm \
-  BUILD_DATE="2017-04-20" \
-  CONSUL_VERSION="0.8.1" \
+  BUILD_DATE="2017-05-13" \
+  CONSUL_VERSION="0.8.3" \
   CONSUL_URL="https://releases.hashicorp.com/consul" \
   APK_ADD="ca-certificates curl unzip"
 

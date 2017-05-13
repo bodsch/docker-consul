@@ -5,9 +5,9 @@ Minimal Image with Consul (https://www.consul.io/)
 
 # Status
 
-[![Docker Pulls](https://img.shields.io/docker/pulls/bodsch/docker-consul.svg?branch=1704-03)][hub]
-[![Image Size](https://images.microbadger.com/badges/image/bodsch/docker-consul.svg?branch=1704-03)][microbadger]
-[![Build Status](https://travis-ci.org/bodsch/docker-consul.svg?branch=1704-03)][travis]
+[![Docker Pulls](https://img.shields.io/docker/pulls/bodsch/docker-consul.svg?branch=1705-03)][hub]
+[![Image Size](https://images.microbadger.com/badges/image/bodsch/docker-consul.svg?branch=1705-03)][microbadger]
+[![Build Status](https://travis-ci.org/bodsch/docker-consul.svg?branch=1705-03)][travis]
 
 [hub]: https://hub.docker.com/r/bodsch/docker-consul/
 [microbadger]: https://microbadger.com/images/bodsch/docker-consul

@@ -7,15 +7,15 @@ ENV \
   ALPINE_MIRROR="mirror1.hs-esslingen.de/pub/Mirrors" \
   ALPINE_VERSION="v3.6" \
   TERM=xterm \
-  BUILD_DATE="2017-08-29" \
-  CONSUL_VERSION="0.9.2" \
+  BUILD_DATE="2017-09-12" \
+  CONSUL_VERSION="0.9.3" \
   CONSUL_URL="https://releases.hashicorp.com/consul" \
   APK_ADD="ca-certificates curl unzip"
 
 EXPOSE 8300 8301 8301/udp 8302 8302/udp 8400 8500 8600 8600/udp
 
 LABEL \
-  version="1708-35" \
+  version="1709-37" \
   org.label-schema.build-date=${BUILD_DATE} \
   org.label-schema.name="Consul Docker Image" \
   org.label-schema.description="Inofficial Consul Docker Image" \

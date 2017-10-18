@@ -1,34 +1,54 @@
+---
+version: '2.0'
 
-consul-master:
-  build: .
-  container_name: consul-master
-  hostname: consul-master
-  ports:
-    - 8400:8400
-    - 8500:8500
-    - 53:53
-  command: "agent -data-dir /data -server -bootstrap-expect 3 -ui -client=0.0.0.0"
+networks:
+  consul:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.10.0/24
 
-consul2:
-  build: .
-  container_name: consul2
-  hostname: consul2
-  ports:
-    - 8400
-    - 8500
-    - 8600
-  links:
-    - consul-master:consul-master
-  command: 'agent -data-dir /data -server -join consul-master'
+services:
 
-consul3:
-  build: .
-  container_name: consul3
-  hostname: consul3
-  ports:
-    - 8400
-    - 8500
-    - 8600
-  links:
-    - consul-master:consul-master
-  command: 'agent -data-dir /data -server -join consul-master'
+  consul-master:
+    build: .
+    container_name: consul-master
+    hostname: consul-master
+    ports:
+      - 8400:8400
+      - 8500:8500
+      - 53:53
+    command: 'agent -data-dir /data -server -bootstrap-expect 3 -ui -client=0.0.0.0'
+    networks:
+      consul:
+        ipv4_address: 192.168.10.10
+
+  consul2:
+    build: .
+    container_name: consul2
+    hostname: consul2
+    ports:
+      - 8400
+      - 8500
+      - 8600
+    links:
+      - consul-master:consul-master
+    command: 'agent -data-dir /data -server -join consul-master'
+    networks:
+      consul:
+        ipv4_address: 192.168.10.20
+
+  consul3:
+    build: .
+    container_name: consul3
+    hostname: consul3
+    ports:
+      - 8400
+      - 8500
+      - 8600
+    links:
+      - consul-master:consul-master
+    command: 'agent -data-dir /data -server -join consul-master'
+    networks:
+      consul:
+        ipv4_address: 192.168.10.21

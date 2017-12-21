@@ -4,9 +4,9 @@ services:
   - docker
 
 install:
-  - docker build --tag bodsch/docker-graphite .
-  - docker run --detach --name graphite bodsch/docker-graphite
+  - docker build --tag bodsch/docker-consul .
+  - docker run --detach --name consul bodsch/docker-consul
 
 script:
-  - docker ps | grep -q graphite
+  - docker ps | grep -q consul
 

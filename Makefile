@@ -8,26 +8,36 @@ REPO     = docker-consul
 NAME     = consul
 INSTANCE = default
 
+BUILD_DATE     := $(shell date +%Y-%m-%d)
+BUILD_TYPE     ?= "stable"
+CONSUL_VERSION ?= "1.0.6"
+
 .PHONY: build push shell run start stop rm release
 
+default: build
 
-build:
+params:
+	@echo ""
+	@echo " CONSUL_VERSION: ${CONSUL_VERSION}"
+	@echo " BUILD_DATE    : $(BUILD_DATE)"
+	@echo ""
+
+build: params
 	docker build \
 		--rm \
-		--tag $(NS)/$(REPO):$(VERSION) .
-
-clean:
-	docker rmi \
-		--force \
-		$(NS)/$(REPO):$(VERSION)
+		--compress \
+		--build-arg BUILD_DATE=$(BUILD_DATE) \
+		--build-arg BUILD_TYPE=$(BUILD_TYPE) \
+		--build-arg CONSUL_VERSION=${CONSUL_VERSION} \
+		--tag $(NS)/$(REPO):$(CONSUL_VERSION) .
 
 history:
 	docker history \
-		$(NS)/$(REPO):$(VERSION)
+		$(NS)/$(REPO):$(CONSUL_VERSION)
 
 push:
 	docker push \
-		$(NS)/$(REPO):$(VERSION)
+		$(NS)/$(REPO):$(CONSUL_VERSION)
 
 shell:
 	docker run \
@@ -39,7 +49,7 @@ shell:
 		$(PORTS) \
 		$(VOLUMES) \
 		$(ENV) \
-		$(NS)/$(REPO):$(VERSION) \
+		$(NS)/$(REPO):$(CONSUL_VERSION) \
 		/bin/sh
 
 run:
@@ -49,7 +59,7 @@ run:
 		$(PORTS) \
 		$(VOLUMES) \
 		$(ENV) \
-		$(NS)/$(REPO):$(VERSION)
+		$(NS)/$(REPO):$(CONSUL_VERSION)
 
 exec:
 	docker exec \
@@ -65,17 +75,24 @@ start:
 		$(PORTS) \
 		$(VOLUMES) \
 		$(ENV) \
-		$(NS)/$(REPO):$(VERSION)
+		$(NS)/$(REPO):$(CONSUL_VERSION)
 
 stop:
 	docker stop \
 		$(NAME)-$(INSTANCE)
 
-rm:
-	docker rm \
-		$(NAME)-$(INSTANCE)
+clean:
+	docker rmi -f `docker images -q ${NS}/${REPO} | uniq`
+
+#
+# List all images
+#
+list:
+	-docker images $(NS)/$(REPO)*
 
 release: build
-	make push -e VERSION=$(VERSION)
+	make push -e VERSION=$(CONSUL_VERSION)
 
-default: build
+publish:
+	# amd64 / community / cpy3
+	docker push $(NS)/$(REPO):$(CONSUL_VERSION)

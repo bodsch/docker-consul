@@ -1,7 +1,5 @@
 PORTS = \
   --publish 8300:8300
 
-VOLUMES = \
-  --volume /var/log/docker:/var/log
-
+VOLUMES =
 ENV =

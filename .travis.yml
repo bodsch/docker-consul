@@ -1,7 +1,29 @@
-sudo: required
+
+group: edge
 
 services:
   - docker
+
+env:
+  global:
+    - CONSUL_VERSION=${CONSUL_VERSION:-1.0.6}
+    - BUILD_DATE=$(date +"%Y-%m-%d")
+
+
+
+jobs:
+  include:
+    - stage: build docker image
+      script:
+        - make
+    - stage: test images & upload
+      script:
+        - docker-compose --file docker-compose_example.yml up --build -d
+        - tests/test.sh
+        - docker-compose --file docker-compose_example.yml kill
+        - docker-compose --file docker-compose_example.yml down
+        - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+        - make publish
 
 install:
   - docker build --tag bodsch/docker-consul .

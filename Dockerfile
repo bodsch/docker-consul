@@ -15,7 +15,6 @@ RUN \
 
 RUN \
   export GOPATH=/opt/go && \
-  export GOMAXPROCS=4 && \
   echo "get sources ..." && \
   go get github.com/hashicorp/consul || true && \
   cd ${GOPATH}/src/github.com/hashicorp/consul && \
@@ -28,6 +27,7 @@ RUN \
   export GOPATH=/opt/go && \
   export PATH=${GOPATH}/bin:${PATH} && \
   cd ${GOPATH}/src/github.com/hashicorp/consul && \
+  export GOMAXPROCS=4 && \
   make && \
   cp -v bin/consul /usr/bin/
 

@@ -36,7 +36,6 @@ api_request() {
     echo ${code}
     echo "api request failed"
   fi
-
 }
 
 inspect

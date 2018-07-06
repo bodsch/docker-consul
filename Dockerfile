@@ -1,5 +1,5 @@
 
-FROM golang:1.10-alpine as builder
+FROM golang:1-alpine as builder
 
 ARG BUILD_DATE
 ARG BUILD_TYPE
@@ -11,7 +11,7 @@ RUN \
   apk update --no-cache && \
   apk upgrade --no-cache && \
   apk add \
-    bash git make zip
+    bash git ncurses make zip
 
 RUN \
   export GOPATH=/opt/go && \
@@ -24,6 +24,7 @@ RUN \
   fi
 
 RUN \
+  export TERM=xterm && \
   export GOPATH=/opt/go && \
   export PATH=${GOPATH}/bin:${PATH} && \
   cd ${GOPATH}/src/github.com/hashicorp/consul && \

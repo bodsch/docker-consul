@@ -2,6 +2,7 @@
 FROM golang:1-alpine as builder
 
 ARG BUILD_DATE
+ARG BUILD_VERSION
 ARG BUILD_TYPE
 ARG CONSUL_VERSION
 
@@ -41,7 +42,7 @@ FROM alpine:3.7
 EXPOSE 8300 8301 8301/udp 8302 8302/udp 8400 8500 8600 8600/udp
 
 LABEL \
-  version="1804" \
+  version="${BUILD_VERSION}" \
   maintainer="Bodo Schulz <bodo@boone-schulz.de>" \
   org.label-schema.build-date=${BUILD_DATE} \
   org.label-schema.name="Consul Docker Image" \

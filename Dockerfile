@@ -29,8 +29,10 @@ RUN \
   export GOPATH=/opt/go && \
   export PATH=${GOPATH}/bin:${PATH} && \
   cd ${GOPATH}/src/github.com/hashicorp/consul && \
+  export GOOS=linux && \
+  export GOARCH=amd64 && \
   export GOMAXPROCS=4 && \
-  make && \
+  make linux && \
   cp -v bin/consul /usr/bin/
 
 CMD ["/bin/bash"]

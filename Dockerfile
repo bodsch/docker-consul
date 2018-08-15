@@ -43,6 +43,16 @@ FROM alpine:3.8
 
 EXPOSE 8300 8301 8301/udp 8302 8302/udp 8400 8500 8600 8600/udp
 
+COPY --from=builder /usr/bin/consul /usr/bin/consul
+
+VOLUME [ "/data" ]
+
+ENTRYPOINT [ "/usr/bin/consul" ]
+
+CMD [ "agent", "-data-dir", "/data" ]
+
+# ---------------------------------------------------------------------------------------
+
 LABEL \
   version="${BUILD_VERSION}" \
   maintainer="Bodo Schulz <bodo@boone-schulz.de>" \
@@ -56,13 +66,5 @@ LABEL \
   org.label-schema.schema-version="1.0" \
   com.microscaling.docker.dockerfile="/Dockerfile" \
   com.microscaling.license="GNU Lesser General Public License v2.1"
-
-COPY --from=builder /usr/bin/consul /usr/bin/consul
-
-VOLUME [ "/data" ]
-
-ENTRYPOINT [ "/usr/bin/consul" ]
-
-CMD [ "agent", "-data-dir", "/data" ]
 
 # ---------------------------------------------------------------------------------------

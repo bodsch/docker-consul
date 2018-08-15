@@ -8,9 +8,10 @@ REPO     = docker-consul
 NAME     = consul
 INSTANCE = default
 
-BUILD_DATE     := $(shell date +%Y-%m-%d)
-BUILD_TYPE     ?= "stable"
-CONSUL_VERSION ?= "1.2.1"
+BUILD_DATE        := $(shell date +%Y-%m-%d)
+BUILD_VERSION     := $(shell date +%y%m)
+BUILD_TYPE        ?= "stable"
+CONSUL_VERSION    ?= "1.2.2"
 
 .PHONY: build push shell run start stop rm release
 
@@ -27,6 +28,7 @@ build: params
 		--rm \
 		--compress \
 		--build-arg BUILD_DATE=$(BUILD_DATE) \
+		--build-arg BUILD_VERSION=$(BUILD_VERSION) \
 		--build-arg BUILD_TYPE=$(BUILD_TYPE) \
 		--build-arg CONSUL_VERSION=${CONSUL_VERSION} \
 		--tag $(NS)/$(REPO):$(CONSUL_VERSION) .

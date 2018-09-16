@@ -11,7 +11,7 @@ INSTANCE = default
 BUILD_DATE        := $(shell date +%Y-%m-%d)
 BUILD_VERSION     := $(shell date +%y%m)
 BUILD_TYPE        ?= "stable"
-CONSUL_VERSION    ?= "1.2.2"
+CONSUL_VERSION    ?= "1.2.3"
 
 .PHONY: build push shell run start stop rm release
 

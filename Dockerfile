@@ -6,16 +6,22 @@ ARG BUILD_VERSION
 ARG BUILD_TYPE
 ARG CONSUL_VERSION
 
+ENV \
+  TERM=xterm \
+  GOPATH=/opt/go \
+  GOOS=linux \
+  GOARCH=amd64 \
+  GOMAXPROCS=4
+
 # ---------------------------------------------------------------------------------------
 
 RUN \
-  apk update --no-cache && \
-  apk upgrade --no-cache && \
-  apk add \
+  apk update  --quiet --no-cache && \
+  apk upgrade --quiet --no-cache && \
+  apk add     --quiet \
     bash git ncurses make zip
 
 RUN \
-  export GOPATH=/opt/go && \
   echo "get sources ..." && \
   go get github.com/hashicorp/consul || true && \
   cd ${GOPATH}/src/github.com/hashicorp/consul && \
@@ -25,13 +31,8 @@ RUN \
   fi
 
 RUN \
-  export TERM=xterm && \
-  export GOPATH=/opt/go && \
   export PATH=${GOPATH}/bin:${PATH} && \
   cd ${GOPATH}/src/github.com/hashicorp/consul && \
-  export GOOS=linux && \
-  export GOARCH=amd64 && \
-  export GOMAXPROCS=4 && \
   make linux && \
   cp -v bin/consul /usr/bin/
 

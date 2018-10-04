@@ -2,26 +2,38 @@
 version: '3.3'
 
 networks:
-  consul:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 192.168.10.0/24
+  frontend:
+  backend:
 
 services:
+  nginx:
+    restart: always
+    image: bodsch/docker-nginx
+    container_name: nginx
+    hostname: nginx
+    ports:
+      - 80:80
+    depends_on:
+      - consul-master
+    links:
+      - consul-master:consul
+    volumes:
+      - ./config/nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - frontend
+      - backend
 
   consul-master:
     build: .
     container_name: consul-master
     hostname: consul-master
     ports:
-      - 8400:8400
-      - 8500:8500
-      - 53:53
+      - 8400
+      - 8500
     command: 'agent -data-dir /data -server -bootstrap-expect 3 -ui -client=0.0.0.0'
+    # -config-file=/etc/consul.d/server.json'
     networks:
-      consul:
-        ipv4_address: 192.168.10.10
+      - backend
 
   consul2:
     build: .
@@ -35,8 +47,7 @@ services:
       - consul-master:consul-master
     command: 'agent -data-dir /data -server -join consul-master'
     networks:
-      consul:
-        ipv4_address: 192.168.10.20
+      - backend
 
   consul3:
     build: .
@@ -50,5 +61,4 @@ services:
       - consul-master:consul-master
     command: 'agent -data-dir /data -server -join consul-master'
     networks:
-      consul:
-        ipv4_address: 192.168.10.21
+      - backend

@@ -30,11 +30,16 @@ RUN \
     git checkout tags/v${CONSUL_VERSION} 2> /dev/null ; \
   fi
 
+WORKDIR ${GOPATH}/src/github.com/hashicorp/consul
+
 RUN \
   export PATH=${GOPATH}/bin:${PATH} && \
-  cd ${GOPATH}/src/github.com/hashicorp/consul && \
-  make linux && \
-  cp -v bin/consul /usr/bin/
+  make linux
+
+RUN \
+  mkdir /etc/consul.d && \
+  cp -a   bin/consul /usr/bin/ && \
+  cp -ar  bench/conf/*.json  /etc/consul.d/
 
 CMD ["/bin/bash"]
 
@@ -45,6 +50,7 @@ FROM alpine:3.8
 EXPOSE 8300 8301 8301/udp 8302 8302/udp 8400 8500 8600 8600/udp
 
 COPY --from=builder /usr/bin/consul /usr/bin/consul
+COPY --from=builder /etc/consul.d   /etc/consul.d
 
 VOLUME [ "/data" ]
 

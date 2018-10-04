@@ -21,7 +21,8 @@ api_request() {
 
   code=$(curl \
     --silent \
-    http://localhost:8500/v1/health/node/${node})
+    --location \
+    http://localhost/v1/health/node/${node})
 
   if [[ $? -eq 0 ]]
   then

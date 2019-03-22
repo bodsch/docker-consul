@@ -1,0 +1,22 @@
+---
+version: '3.3'
+
+services:
+
+  consul-master:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+      args:
+        - BUILD_DATE=${BUILD_DATE}
+        - BUILD_VERSION=${BUILD_VERSION}
+        - BUILD_TYPE=${BUILD_TYPE}
+        - CONSUL_VERSION=${CONSUL_VERSION}
+    container_name: consul-master
+    hostname: consul-master
+    ports:
+      - 8400
+      - 8500:8500
+    command: 'agent -data-dir /data -server -bootstrap-expect 3 -ui -client=0.0.0.0'
+    networks:
+      - backend

@@ -1,100 +1,45 @@
+export GIT_SHA1          := $(shell git rev-parse --short HEAD)
+export DOCKER_IMAGE_NAME := vault
+export DOCKER_NAME_SPACE := ${USER}
+export DOCKER_VERSION    ?= latest
+export BUILD_DATE        := $(shell date +%Y-%m-%d)
+export BUILD_VERSION     := $(shell date +%y%m)
+export BUILD_TYPE        ?= stable
+export CONSUL_VERSION    ?= 1.4.4
 
-include env_make
 
-NS       = bodsch
-VERSION ?= latest
-
-REPO     = docker-consul
-NAME     = consul
-INSTANCE = default
-
-BUILD_DATE        := $(shell date +%Y-%m-%d)
-BUILD_VERSION     := $(shell date +%y%m)
-BUILD_TYPE        ?= "stable"
-CONSUL_VERSION    ?= "1.3.1"
-
-.PHONY: build push shell run start stop rm release
+.PHONY: build shell run exec start stop clean
 
 default: build
 
-params:
-	@echo ""
-	@echo " CONSUL_VERSION: ${CONSUL_VERSION}"
-	@echo " BUILD_DATE    : $(BUILD_DATE)"
-	@echo ""
+build:
+	@hooks/build
 
-build: params
-	docker build \
-		--rm \
-		--compress \
-		--build-arg BUILD_DATE=$(BUILD_DATE) \
-		--build-arg BUILD_VERSION=$(BUILD_VERSION) \
-		--build-arg BUILD_TYPE=$(BUILD_TYPE) \
-		--build-arg CONSUL_VERSION=${CONSUL_VERSION} \
-		--tag $(NS)/$(REPO):$(CONSUL_VERSION) .
-
-history:
-	docker history \
-		$(NS)/$(REPO):$(CONSUL_VERSION)
-
-push:
-	docker push \
-		$(NS)/$(REPO):$(CONSUL_VERSION)
-
-shell:
-	docker run \
-		--rm \
-		--name $(NAME)-$(INSTANCE) \
-		--interactive \
-		--tty \
-		--entrypoint "" \
-		$(PORTS) \
-		$(VOLUMES) \
-		$(ENV) \
-		$(NS)/$(REPO):$(CONSUL_VERSION) \
-		/bin/sh
+hell:
+	@hooks/shell
 
 run:
-	docker run \
-		--rm \
-		--name $(NAME)-$(INSTANCE) \
-		$(PORTS) \
-		$(VOLUMES) \
-		$(ENV) \
-		$(NS)/$(REPO):$(CONSUL_VERSION)
+	@hooks/run
 
 exec:
-	docker exec \
-		--interactive \
-		--tty \
-		$(NAME)-$(INSTANCE) \
-		/bin/sh
+	@hooks/exec
 
 start:
-	docker run \
-		--detach \
-		--name $(NAME)-$(INSTANCE) \
-		$(PORTS) \
-		$(VOLUMES) \
-		$(ENV) \
-		$(NS)/$(REPO):$(CONSUL_VERSION)
+	@hooks/start
 
 stop:
-	docker stop \
-		$(NAME)-$(INSTANCE)
+	@hooks/stop
 
 clean:
-	docker rmi -f `docker images -q ${NS}/${REPO} | uniq`
+	@hooks/clean
 
-#
-# List all images
-#
-list:
-	-docker images $(NS)/$(REPO)*
+compose-file:
+	@hooks/compose-file
 
-release: build
-	make push -e VERSION=$(CONSUL_VERSION)
+linter:
+	@tests/linter.sh
 
-publish:
-	# amd64 / community / cpy3
-	docker push $(NS)/$(REPO):$(CONSUL_VERSION)
+integration_test:
+	@tests/integration_test.sh
+
+test: linter integration_test

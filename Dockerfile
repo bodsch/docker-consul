@@ -16,24 +16,32 @@ ENV \
 # ---------------------------------------------------------------------------------------
 
 RUN \
+  echo "export BUILD_DATE=${BUILD_DATE}"           > /etc/profile.d/consul.sh && \
+  echo "export BUILD_TYPE=${BUILD_TYPE}"          >> /etc/profile.d/consul.sh && \
+  echo "export CONSUL_VERSION=${CONSUL_VERSION}"  >> /etc/profile.d/consul.sh
+
+# hadolint ignore=DL3017,DL3018
+RUN \
   apk update  --quiet --no-cache && \
   apk upgrade --quiet --no-cache && \
-  apk add     --quiet \
+  apk add     --quiet --no-cache \
     bash git ncurses make zip
 
+WORKDIR /opt/go
+
 RUN \
-  echo "get sources ..." && \
-  go get github.com/hashicorp/consul || true && \
-  cd ${GOPATH}/src/github.com/hashicorp/consul && \
+  go get github.com/hashicorp/consul
+
+WORKDIR /opt/go/src/github.com/hashicorp/consul
+
+RUN \
   if [ "${BUILD_TYPE}" == "stable" ] ; then \
     echo "switch to stable Tag v${CONSUL_VERSION}" && \
-    git checkout tags/v${CONSUL_VERSION} 2> /dev/null ; \
+    git checkout "tags/v${CONSUL_VERSION}" 2> /dev/null ; \
   fi
 
-WORKDIR ${GOPATH}/src/github.com/hashicorp/consul
-
 RUN \
-  export PATH=${GOPATH}/bin:${PATH} && \
+  export PATH="${GOPATH}/bin:${PATH}" && \
   make linux
 
 RUN \
@@ -41,22 +49,21 @@ RUN \
   cp -a   bin/consul /usr/bin/ && \
   cp -ar  bench/conf/*.json  /etc/consul.d/
 
-CMD ["/bin/bash"]
-
 # ---------------------------------------------------------------------------------------
 
-FROM alpine:3.8
+FROM alpine:3.9
 
 EXPOSE 8300 8301 8301/udp 8302 8302/udp 8400 8500 8600 8600/udp
 
-COPY --from=builder /usr/bin/consul /usr/bin/consul
-COPY --from=builder /etc/consul.d   /etc/consul.d
+COPY --from=builder /etc/profile.d/consul.sh  /etc/profile.d/consul.sh
+COPY --from=builder /usr/bin/consul           /usr/bin/consul
+COPY --from=builder /etc/consul.d             /etc/consul.d
 
-VOLUME [ "/data" ]
+VOLUME ["/data"]
 
-ENTRYPOINT [ "/usr/bin/consul" ]
+ENTRYPOINT ["/usr/bin/consul"]
 
-CMD [ "agent", "-data-dir", "/data" ]
+CMD ["agent", "-data-dir", "/data"]
 
 # ---------------------------------------------------------------------------------------
 

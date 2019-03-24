@@ -1,5 +1,5 @@
 export GIT_SHA1          := $(shell git rev-parse --short HEAD)
-export DOCKER_IMAGE_NAME := vault
+export DOCKER_IMAGE_NAME := consul
 export DOCKER_NAME_SPACE := ${USER}
 export DOCKER_VERSION    ?= latest
 export BUILD_DATE        := $(shell date +%Y-%m-%d)

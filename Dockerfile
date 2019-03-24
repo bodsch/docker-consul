@@ -53,15 +53,47 @@ RUN \
 
 FROM alpine:3.9
 
-EXPOSE 8300 8301 8301/udp 8302 8302/udp 8400 8500 8600 8600/udp
+# https://www.consul.io/docs/agent/options.html#ports
+# Server RPC address
+EXPOSE 8300
+# The Serf LAN port
+EXPOSE 8301 8301/udp
+# The Serf WAN port
+EXPOSE 8302 8302/udp
+# The HTTP API
+EXPOSE 8500
+# The HTTPS API
+EXPOSE 8501
+# The gRPC API
+EXPOSE 8502
+# The DNS server
+EXPOSE 8600 8600/udp
 
 COPY --from=builder /etc/profile.d/consul.sh  /etc/profile.d/consul.sh
 COPY --from=builder /usr/bin/consul           /usr/bin/consul
 COPY --from=builder /etc/consul.d             /etc/consul.d
 
+# hadolint ignore=DL3017,DL3018
+RUN \
+  apk update  --quiet --no-cache && \
+  apk upgrade --quiet --no-cache && \
+  apk add     --quiet --no-cache \
+    curl && \
+  rm -rf \
+    /src \
+    /tmp/* \
+    /root/.cache \
+    /var/cache/apk/*
+
 VOLUME ["/data"]
 
 ENTRYPOINT ["/usr/bin/consul"]
+
+HEALTHCHECK \
+  --interval=5s \
+  --timeout=2s \
+  --retries=12 \
+  CMD curl --silent --fail localhost:8500 || exit 1
 
 CMD ["agent", "-data-dir", "/data"]
 

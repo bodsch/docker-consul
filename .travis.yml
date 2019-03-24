@@ -14,14 +14,29 @@ jobs:
     - stage: build docker image
       script:
         - make
-    - stage: test images & upload
+
+    - stage: test images
       script:
         - make
-        - docker-compose --file docker-compose_example.yml up --build -d
-        - tests/test.sh
-        - docker-compose --file docker-compose_example.yml kill
-        - docker-compose --file docker-compose_example.yml down
+        - make compose-file
+        - docker-compose up --build -d
+        - make test
+        - docker-compose kill
+        - docker-compose down
+
+    - stage: push latest docker image
+      script:
+        - make
         - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-        - docker tag ${DOCKER_USERNAME}/docker-consul:${CONSUL_VERSION}           ${DOCKER_USERNAME}/docker-consul:latest
+        - docker tag  ${USER}/consul:latest ${DOCKER_USERNAME}/docker-consul:latest
         - docker push ${DOCKER_USERNAME}/docker-consul:latest
+        - docker logout
+
+    - stage: push version docker image
+      if: branch = master
+      script:
+        - make
+        - docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
+        - docker tag  ${USER}/consul:latest ${DOCKER_USERNAME}/docker-consul:${CONSUL_VERSION}
+        - docker push ${DOCKER_USERNAME}/docker-consul:${CONSUL_VERSION}
         - docker logout

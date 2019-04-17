@@ -15,7 +15,7 @@ default: build
 build:
 	@hooks/build
 
-hell:
+shell:
 	@hooks/shell
 
 run:

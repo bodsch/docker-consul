@@ -1,42 +1,36 @@
-
 group: edge
-
 services:
-  - docker
-
+- docker
 env:
   global:
-    - CONSUL_VERSION=${CONSUL_VERSION:-1.4.4}
-    - BUILD_DATE=$(date +"%Y-%m-%d")
-
+  - CONSUL_VERSION=${CONSUL_VERSION:-1.4.4}
+  - BUILD_DATE=$(date +"%Y-%m-%d")
+  - secure: my3mfDos44Zhd4uxTjqKCo+wwqKmo8DwBTAmORgLPBPS0+C5aP4X9DvsEtRqHZoeCLGF4IAOf/X/p6AXsqZCNboLyWNKSC7Y6eVhkZ6vm5tZe5YH36TEiwsTXZwgeGBgyLo680sRSaVG8XZRA/up2btAVnnFu1glVQUUCRBOEb/FiPnBdsbGOlaIAgb2qh3LKB39ZQZ/tu8B29HMq2peRLXIfBl4cLXTIOPW3LXZApKX9MH7SzqTWIbBoyXT0/rIHBAsCE7EW7WjUe97v/VefBwrICTTRCF5O5kNlJ23oxu3aFk0TuDZ3NYOjX67uvIvg4Eaf7Gg1ctOf0LNX+bMMJ/kXhPxdoRGr73fAxTxLmUNkiXgnAzH2B4k8gI6Z6eBXxMl/xLFbumoo1F8b4av3ZExDWTAu3nx9SubnlvP/dIlEPIb5fxJA3rzZIEAfX0D+UFapu/XVspNdBzu524vjJmxAdEYIn+DB07GwlMrv0YS4ajl8TgIP3dzXMnJBvLV2cdRsi5oMxULE0De6NCBI6fH9KnTrHYV4YMdrpI1teoN3ZI4zThe5aqh7vxWR/0DlmujlCDFGoOk7fYz658P3arMOS35nQlrlUSsI7r4wuE5zMxBMhl8prI27e4SKi5T5g+ohFbcoRDRdSt4fyKA8TuRwlrgoXMrfpCkLRIDDl8=
 jobs:
   include:
-    - stage: build docker image
-      script:
-        - make
-
-    - stage: test images
-      script:
-        - make compose-file
-        - docker-compose up --build -d
-        - sleep 10s
-        - make test
-        - docker-compose kill
-        - docker-compose down
-
-    - stage: push latest docker image
-      script:
-        - make
-        - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-        - docker tag  ${USER}/consul:latest ${DOCKER_USERNAME}/docker-consul:latest
-        - docker push ${DOCKER_USERNAME}/docker-consul:latest
-        - docker logout
-
-    - stage: push version docker image
-      if: branch = master
-      script:
-        - make
-        - docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
-        - docker tag  ${USER}/consul:latest ${DOCKER_USERNAME}/docker-consul:${CONSUL_VERSION}
-        - docker push ${DOCKER_USERNAME}/docker-consul:${CONSUL_VERSION}
-        - docker logout
+  - stage: build docker image
+    script:
+    - make
+  - stage: test images
+    script:
+    - make compose-file
+    - docker-compose up --build -d
+    - sleep 10s
+    - make test
+    - docker-compose kill
+    - docker-compose down
+  - stage: push latest docker image
+    script:
+    - make
+    - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+    - docker tag  ${USER}/consul:latest ${DOCKER_USERNAME}/docker-consul:latest
+    - docker push ${DOCKER_USERNAME}/docker-consul:latest
+    - docker logout
+  - stage: push version docker image
+    if: branch = master
+    script:
+    - make
+    - docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
+    - docker tag  ${USER}/consul:latest ${DOCKER_USERNAME}/docker-consul:${CONSUL_VERSION}
+    - docker push ${DOCKER_USERNAME}/docker-consul:${CONSUL_VERSION}
+    - docker logout

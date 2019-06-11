@@ -1,6 +1,7 @@
 
 FROM golang:1-alpine as builder
 
+ARG VCS_REF
 ARG BUILD_DATE
 ARG BUILD_VERSION
 ARG BUILD_TYPE
@@ -35,7 +36,7 @@ RUN \
 WORKDIR /opt/go/src/github.com/hashicorp/consul
 
 RUN \
-  if [ "${BUILD_TYPE}" == "stable" ] ; then \
+  if [ "${BUILD_TYPE}" = "stable" ] ; then \
     echo "switch to stable Tag v${CONSUL_VERSION}" && \
     git checkout "tags/v${CONSUL_VERSION}" 2> /dev/null ; \
   fi
@@ -107,6 +108,7 @@ LABEL \
   org.label-schema.description="Inofficial Consul Docker Image" \
   org.label-schema.url="https://www.consul.io/" \
   org.label-schema.vcs-url="https://github.com/bodsch/docker-consul" \
+  org.label-schema.vcs-ref=${VCS_REF} \
   org.label-schema.vendor="Bodo Schulz" \
   org.label-schema.version=${CONSUL_VERSION} \
   org.label-schema.schema-version="1.0" \

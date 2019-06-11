@@ -4,6 +4,7 @@ version: '3.3'
 services:
 
   consul-master:
+    restart: always
     build:
       context: ..
       dockerfile: Dockerfile

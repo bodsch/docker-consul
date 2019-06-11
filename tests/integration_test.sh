@@ -17,6 +17,7 @@ inspect() {
 
     printf "%-40s - %s\n"  "${c}" "${s}"
   done
+  echo ""
 }
 
 

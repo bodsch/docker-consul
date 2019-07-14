@@ -52,7 +52,7 @@ RUN \
 
 # ---------------------------------------------------------------------------------------
 
-FROM alpine:3.9
+FROM alpine:3.10
 
 # https://www.consul.io/docs/agent/options.html#ports
 # Server RPC address

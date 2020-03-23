@@ -31,7 +31,12 @@ RUN \
 WORKDIR /opt/go
 
 RUN \
-  go get github.com/hashicorp/consul
+  mkdir -p src/github.com/hashicorp
+
+WORKDIR /opt/go/src/github.com/hashicorp
+
+RUN \
+  git clone https://github.com/hashicorp/consul.git
 
 WORKDIR /opt/go/src/github.com/hashicorp/consul
 
@@ -40,6 +45,11 @@ RUN \
     echo "switch to stable Tag v${CONSUL_VERSION}" && \
     git checkout "tags/v${CONSUL_VERSION}" 2> /dev/null ; \
   fi
+
+# hadolint ignore=DL4006,SC2153
+RUN \
+  CONSUL_VERSION=$(git describe --tags --always | sed 's/^v//') && \
+  echo " => build version ${CONSUL_VERSION}"
 
 RUN \
   export PATH="${GOPATH}/bin:${PATH}" && \

@@ -5,7 +5,7 @@ export DOCKER_VERSION    ?= latest
 export BUILD_DATE        := $(shell date +%Y-%m-%d)
 export BUILD_VERSION     := $(shell date +%y%m)
 export BUILD_TYPE        ?= stable
-export CONSUL_VERSION    ?= 1.6.0
+export CONSUL_VERSION    ?= 1.7.2
 
 
 .PHONY: build shell run exec start stop clean
